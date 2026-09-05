@@ -93,6 +93,60 @@ found `129170` mismatches among `1850381` eligible finite cases (`6.98072%`).
 This percentage characterizes that deliberately extreme exponent-distribution
 stress test; it is not an estimate of frequency in ordinary applications.
 
+## 3. Large negative real parts produce the wrong component signs in `cosh` and `sinh`
+
+For `z = x + iy`, the defining identities are:
+
+```text
+cosh(z) = cosh(x) cos(y) + i sinh(x) sin(y)
+sinh(z) = sinh(x) cos(y) + i cosh(x) sin(y)
+```
+
+The large-`|x|` fast paths replace both `cosh(x)` and `sinh(x)` by a scaled
+`exp(|x|)`. When `x` is negative, however, only `sinh(x)` changes sign. The
+current `cosh` path applies no sign change, while the current `sinh` path
+applies the sign to both components.
+
+Reproducer:
+
+```swift
+import ComplexModule
+
+typealias C = Complex<Double>
+print(C.cosh(C(-40, 0.5)))
+print(C.sinh(C(-40, 0.5)))
+print(C.cos(C(0.5, 40)))
+print(C.sin(C(0.5, 40)))
+```
+
+Observed on the pinned `main` revision:
+
+```text
+cosh(-40 + 0.5i) = ( 1.032850027510405e+17,  5.642485416641618e+16)
+sinh(-40 + 0.5i) = (-1.032850027510405e+17, -5.642485416641618e+16)
+cos( 0.5 + 40i)  = ( 1.032850027510405e+17,  5.642485416641618e+16)
+sin( 0.5 + 40i)  = (-5.642485416641618e+16,  1.032850027510405e+17)
+```
+
+Expected from the identities above, conjugation symmetry, and an independent
+80-decimal-digit `mpmath` evaluation:
+
+```text
+cosh(-40 + 0.5i) = ( 1.032850027510405e+17, -5.642485416641618e+16)
+sinh(-40 + 0.5i) = (-1.032850027510405e+17,  5.642485416641618e+16)
+cos( 0.5 + 40i)  = ( 1.032850027510405e+17, -5.642485416641618e+16)
+sin( 0.5 + 40i)  = ( 5.642485416641618e+16,  1.032850027510405e+17)
+```
+
+This is a sign error, not an ULP-level accuracy disagreement. For `Double`,
+the affected fast path begins at approximately
+`abs(real) >= -log(Double.ulpOfOne)`, about `36.04`. The direct `cosh` and
+`sinh` failures occur for negative real parts in that range; `cos` and `sin`
+inherit the failures for sufficiently large positive imaginary parts.
+
+The current near-overflow tests contain the same incorrect sign assumptions,
+so they pass while encoding the defect as expected behavior.
+
 ## Existing-issue search
 
 On 2026-09-05, repository issue searches for `reciprocal`,
@@ -105,3 +159,5 @@ cases and real floating-point exponents, not these findings.
 - Integer-power API contract: <https://github.com/apple/swift-numerics/blob/main/Sources/RealModule/ElementaryFunctions.swift#L195-L212>
 - Current `Complex.pow` implementation: <https://github.com/apple/swift-numerics/blob/main/Sources/ComplexModule/Complex%2BElementaryFunctions.swift#L429-L441>
 - `Complex.reciprocal` guarantee and implementation: <https://github.com/apple/swift-numerics/blob/main/Sources/ComplexModule/Complex%2BAlgebraicField.swift#L144-L164>
+- `Complex.cosh` and `Complex.sinh` implementation: <https://github.com/apple/swift-numerics/blob/main/Sources/ComplexModule/Complex%2BElementaryFunctions.swift#L141-L183>
+- Existing large-negative-input tests: <https://github.com/apple/swift-numerics/blob/main/Tests/ComplexTests/ElementaryFunctionTests.swift#L175-L215>

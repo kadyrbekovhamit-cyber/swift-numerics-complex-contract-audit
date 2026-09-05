@@ -56,3 +56,28 @@ base=(-1.0, 0.0) n=9007199254740991
 ```
 
 All three integer exponents are exactly representable as `Double`.
+
+## Large-negative hyperbolic and derived trigonometric examples
+
+```text
+cosh(-40 + 0.5i)
+  observed=( 1.032850027510405e+17,  5.642485416641618e+16)
+  expected=( 1.032850027510405e+17, -5.642485416641618e+16)
+
+sinh(-40 + 0.5i)
+  observed=(-1.032850027510405e+17, -5.642485416641618e+16)
+  expected=(-1.032850027510405e+17,  5.642485416641618e+16)
+
+cos(0.5 + 40i)
+  observed=(1.032850027510405e+17,  5.642485416641618e+16)
+  expected=(1.032850027510405e+17, -5.642485416641618e+16)
+
+sin(0.5 + 40i)
+  observed=(-5.642485416641618e+16, 1.032850027510405e+17)
+  expected=( 5.642485416641618e+16, 1.032850027510405e+17)
+```
+
+The expected signs follow from the exact identities
+`cosh(-x + iy) = conjugate(cosh(x + iy))` and
+`sinh(-x + iy) = -conjugate(sinh(x + iy))`. They were also checked against
+`mpmath` at 80 decimal digits.

@@ -115,3 +115,34 @@ func showSimpleReciprocalCounterexample() {
 
 showSimpleReciprocalCounterexample()
 scanReciprocalEquivalence(iterations: 2_000_000)
+
+func showNegativeRealHyperbolicCounterexample() {
+  let positive = C(40, 0.5)
+  let negative = C(-40, 0.5)
+
+  let positiveCosh = C.cosh(positive)
+  let observedCosh = C.cosh(negative)
+  let expectedCosh = positiveCosh.conjugate
+
+  let positiveSinh = C.sinh(positive)
+  let observedSinh = C.sinh(negative)
+  let expectedSinh = -positiveSinh.conjugate
+
+  let rotated = C(0.5, 40)
+  let observedCos = C.cos(rotated)
+  let expectedCos = expectedCosh
+  let observedSin = C.sin(rotated)
+  let expectedSin = C(expectedSinh.imaginary, -expectedSinh.real)
+
+  print("negative-real hyperbolic counterexample")
+  print("  cosh(-40 + 0.5i) observed=(\(observedCosh.real), \(observedCosh.imaginary))")
+  print("  cosh(-40 + 0.5i) symmetry oracle=(\(expectedCosh.real), \(expectedCosh.imaginary))")
+  print("  sinh(-40 + 0.5i) observed=(\(observedSinh.real), \(observedSinh.imaginary))")
+  print("  sinh(-40 + 0.5i) symmetry oracle=(\(expectedSinh.real), \(expectedSinh.imaginary))")
+  print("  cos(0.5 + 40i) observed=(\(observedCos.real), \(observedCos.imaginary))")
+  print("  cos(0.5 + 40i) identity oracle=(\(expectedCos.real), \(expectedCos.imaginary))")
+  print("  sin(0.5 + 40i) observed=(\(observedSin.real), \(observedSin.imaginary))")
+  print("  sin(0.5 + 40i) identity oracle=(\(expectedSin.real), \(expectedSin.imaginary))")
+}
+
+showNegativeRealHyperbolicCounterexample()
