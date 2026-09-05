@@ -2,6 +2,8 @@
 
 `Complex.reciprocal` can be non-nil when reciprocal multiplication differs from direct division
 
+Published as [Swift Numerics issue #346](https://github.com/apple/swift-numerics/issues/346).
+
 ## Description
 
 The documentation for `Complex.reciprocal` says that whenever the reciprocal

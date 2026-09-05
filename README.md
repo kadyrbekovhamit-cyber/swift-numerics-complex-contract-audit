@@ -81,6 +81,7 @@ evidence boundary and recorded output.
 
 ## Upstream references
 
+- [Filed upstream as Swift Numerics issue #346](https://github.com/apple/swift-numerics/issues/346)
 - [`Complex.reciprocal` documentation and implementation](https://github.com/apple/swift-numerics/blob/899af71c0256d0ad181e3b7eb3453c1065d928a5/Sources/ComplexModule/Complex%2BAlgebraicField.swift#L144-L164)
 - [`Complex.pow(_: Int)` implementation](https://github.com/apple/swift-numerics/blob/899af71c0256d0ad181e3b7eb3453c1065d928a5/Sources/ComplexModule/Complex%2BElementaryFunctions.swift#L429-L441)
 - [`ElementaryFunctions.pow(_: Int)` documentation](https://github.com/apple/swift-numerics/blob/899af71c0256d0ad181e3b7eb3453c1065d928a5/Sources/RealModule/ElementaryFunctions.swift#L207-L212)
