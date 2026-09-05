@@ -95,6 +95,8 @@ stress test; it is not an estimate of frequency in ordinary applications.
 
 ## 3. Large negative real parts produce the wrong component signs in `cosh` and `sinh`
 
+Filed upstream as [Swift Numerics issue #347](https://github.com/apple/swift-numerics/issues/347).
+
 For `z = x + iy`, the defining identities are:
 
 ```text

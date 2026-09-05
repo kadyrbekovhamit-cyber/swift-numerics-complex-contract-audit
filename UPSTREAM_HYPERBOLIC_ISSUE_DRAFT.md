@@ -1,6 +1,6 @@
-# `Complex.cosh` / `sinh` use the wrong component signs for large negative real parts
-
 ## Summary
+
+Published as [Swift Numerics issue #347](https://github.com/apple/swift-numerics/issues/347).
 
 The overflow-avoiding fast paths for `Complex.cosh` and `Complex.sinh` return
 the wrong sign for one component when the real part is sufficiently large and
@@ -106,6 +106,9 @@ can remain unchanged.
 
 - Implementation: <https://github.com/apple/swift-numerics/blob/899af71c0256d0ad181e3b7eb3453c1065d928a5/Sources/ComplexModule/Complex%2BElementaryFunctions.swift#L141-L183>
 - Existing tests: <https://github.com/apple/swift-numerics/blob/899af71c0256d0ad181e3b7eb3453c1065d928a5/Tests/ComplexTests/ElementaryFunctionTests.swift#L175-L215>
+
+Executable reproducer and recorded output:
+<https://github.com/kadyrbekovhamit-cyber/swift-numerics-complex-contract-audit>
 
 I did not find an existing issue or pull request describing this negative-real
 component-sign failure using searches for `Complex cosh negative`,
